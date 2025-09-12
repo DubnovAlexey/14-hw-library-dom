@@ -67,11 +67,13 @@ th {
     background: #b52b27;
 }
 
-#explosion-canvas {
+#explosion-canvas { // холст для анимации взрыва, поверх всего
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none; /* чтобы не мешал кликам */
+    z-index: 9999; /* поверх всего */
 }
+
