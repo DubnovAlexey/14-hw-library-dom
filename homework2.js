@@ -6,11 +6,7 @@ const playlist = [
     "./music/4.mp3",
     "./music/5.mp3"
 ];
-let currentTrack = 0;// Индекс текущего трека, по умолчанию 0, т.е. первый трек в массиве
-
-// Звук салюта, загружается один раз, чтобы избежать задержек при воспроизведении
-const fireworkSound = new Audio("https://actions.google.com/sounds/v1/explosions/explosion.ogg");
-fireworkSound.volume = 0.5;
+let currentTrack = 0;
 
 // Класс для книги
 function Book(isbn, title, author, year) {
@@ -19,57 +15,6 @@ function Book(isbn, title, author, year) {
     this.author = author;
     this.year = +year;
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("bookForm");
-    const tableBody = document.querySelector("#libraryTable tbody");
-    const music = document.getElementById("bg-music");
-    const playBtn = document.getElementById("play-btn");
-
-    // 🎵 Музыкальный плейлист, зацикленный, переключение треков по окончании
-    music.src = playlist[currentTrack];
-    music.addEventListener("ended", () => {
-        currentTrack = (currentTrack + 1) % playlist.length;
-        music.src = playlist[currentTrack];
-        music.play().catch(() => {
-        });
-    });
-
-    playBtn.addEventListener("click", () => {
-        if (music.paused) {
-            music.play().catch(() => {
-            });
-            playBtn.textContent = "⏸ Остановить музыку";
-        } else {
-            music.pause();
-            playBtn.textContent = "🎵 Включить музыку";
-        }
-    });
-
-    // 📚 Добавление книги, проверка на уникальность ISBN, обновление таблицы
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const isbn = document.getElementById("isbn").value.trim();
-        const title = document.getElementById("title").value.trim();
-        const author = document.getElementById("author").value.trim();
-        const year = document.getElementById("year").value.trim();
-
-        if (findBook(library, isbn) === -1) {
-            const book = new Book(isbn, title, author, year);
-            library.push(book);
-            printLibrary(library, tableBody);
-            form.reset();
-
-            // 🎆 Салют
-            launchFirework();// Запуск салюта в центре экрана, можно изменить координаты, передав x и y
-            fireworkSound.play().catch(() => {
-            });
-        } else {
-            alert("Книга с таким ISBN уже есть в библиотеке!");
-        }
-    });
-});
 
 // 📚 Работа с таблицей
 function printLibrary(library, tableBody) {
@@ -100,53 +45,119 @@ function findBook(library, isbn) {
     return library.findIndex(b => b.isbn === isbn);
 }
 
-// 🎆 Салют
-const canvas = document.getElementById("explosion-canvas");
-const ctx = canvas.getContext("2d");
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("bookForm");
+    const tableBody = document.querySelector("#libraryTable tbody");
+    const music = document.getElementById("bg-music");
+    const playBtn = document.getElementById("play-btn");
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
+    // Звук салюта
+    const fireworkSound = new Audio("./music/11.mp3");
+    fireworkSound.volume = 0.5;
 
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
+    // Салют, перенесён сюда, чтобы избежать ошибок
+    const canvas = document.getElementById("explosion-canvas");
+    const ctx = canvas.getContext("2d");
 
-function launchFirework(x = canvas.width / 2, y = canvas.height / 2) {
-    const particles = [];
-
-    for (let i = 0; i < 250; i++) {
-        particles.push({
-            x,
-            y,
-            dx: (Math.random() - 0.5) * 20,
-            dy: (Math.random() - 0.5) * 20,
-            radius: 3,
-            alpha: 1,
-            color: `hsl(${Math.random() * 360}, 100%, 50%)`
-        });
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
 
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function launchFirework(x = canvas.width / 2, y = canvas.height / 2) {
+        const particles = [];
 
-        particles.forEach(p => {
-            p.x += p.dx;
-            p.y += p.dy;
-            p.alpha -= 0.01;
-
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `hsla(${Math.random() * 360}, 100%, 50%, ${p.alpha})`;
-            ctx.fill();
-        });
-
-        if (particles.some(p => p.alpha > 0)) {
-            requestAnimationFrame(animate);
-        } else {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 300; i++) {
+            particles.push({
+                x,
+                y,
+                dx: (Math.random() - 0.5) * 20,
+                dy: (Math.random() - 0.5) * 20,
+                radius: 5,
+                alpha: 1,
+                color: `hsl(${Math.random() * 360}, 100%, 75%)`
+            });
         }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                p.x += p.dx;
+                p.y += p.dy;
+                p.alpha -= 0.005;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${Math.random() * 360}, 100%, 75%, ${p.alpha})`;
+                ctx.fill();
+            });
+
+            if (particles.some(p => p.alpha > 0)) {
+                requestAnimationFrame(animate);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+        animate();
     }
 
-    animate();
-}
+    // 🎵 Музыкальный плейлист
+    music.src = playlist[currentTrack];
+    music.volume = 1.0; // Устанавливаем громкость по умолчанию
+    music.addEventListener("ended", () => {
+        currentTrack = (currentTrack + 1) % playlist.length;
+        music.src = playlist[currentTrack];
+        music.play().catch(() => {});
+    });
+
+    playBtn.addEventListener("click", () => {
+        if (music.paused) {
+            music.play().catch(() => {});
+            playBtn.textContent = "⏸ Остановить музыку";
+        } else {
+            music.pause();
+            playBtn.textContent = "🎵 Включить музыку";
+        }
+    });
+
+    // 📚 Добавление книги
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const isbn = document.getElementById("isbn").value.trim();
+        const title = document.getElementById("title").value.trim();
+        const author = document.getElementById("author").value.trim();
+        const year = document.getElementById("year").value.trim();
+
+        if (findBook(library, isbn) === -1) {
+            const book = new Book(isbn, title, author, year);
+            library.push(book);
+            printLibrary(library, tableBody);
+            form.reset();
+
+            // 🎆 Приглушаем музыку перед запуском салюта
+            music.volume = 0.1;
+
+            // Запускаем салют и звук
+            launchFirework();
+            fireworkSound.play().catch(() => {});
+
+            // Ограничиваем звук салюта 3 секундами
+            setTimeout(() => {
+                fireworkSound.pause();
+                fireworkSound.currentTime = 0;
+            }, 3000);
+
+            // Возвращаем громкость музыки через 4 секунды
+            setTimeout(() => {
+                music.volume = 1.0;
+            }, 4000);
+
+        } else {
+            alert("Книга с таким ISBN уже есть в библиотеке!");
+        }
+    });
+});
