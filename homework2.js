@@ -85,3 +85,33 @@ function Book(isbn, title, author, year) {
     this.author = author;
     this.year = +year;
 }
+const audio = document.getElementById('bg-music');
+const playButton = document.getElementById('play-btn');
+
+const playlist = [
+    './music/1.mp3',
+    './music/2.mp3',
+    './music/3.mp3',
+    './music/4.mp3',
+    './music/5.mp3'
+];
+let currentTrackIndex = 0;
+
+function playNextTrack() {
+    currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+    audio.src = playlist[currentTrackIndex];
+    audio.play();
+}
+
+audio.addEventListener('ended', playNextTrack);
+
+if (playButton) {
+    playButton.addEventListener('click', () => {
+        playButton.style.display = 'none';
+        audio.src = playlist[currentTrackIndex];
+        audio.play();
+        const x = window.innerWidth / 2;
+        const y = window.innerHeight / 2;
+        createParticles(x, y);
+    });
+}
