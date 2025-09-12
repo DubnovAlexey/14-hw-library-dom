@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Библиотека</title>
-    <script src="./homework2.js" defer></script>
     <link href="style.css" rel="stylesheet"/>
+    <script src="homework2.js" defer></script>
 </head>
 <body>
 <h1>Моя библиотека</h1>
@@ -36,21 +36,14 @@
         <th>Действия</th>
     </tr>
     </thead>
-    <tbody>
-    <!-- Список книг -->
-    </tbody>
+    <tbody></tbody>
 </table>
-<body class="d-flex justify-content-center align-items-center flex-column min-vh-100">
-<audio id="bg-music">
-    <source src="./music/1.mp3" type="audio/mpeg">
-    <source src="./music/2.mp3" type="audio/mpeg">
-    <source src="./music/3.mp3" type="audio/mpeg">
-    <source src="./music/4.mp3" type="audio/mpeg">
-    <source src="./music/5.mp3" type="audio/mpeg">
-</audio>
-<button id="play-btn" class="btn btn-lg btn-custom-orange mb-4 blinking-button">!!!~НАЖАТЬ~!!!</button>
-<canvas id="explosion-canvas"></canvas>
-</body>
 
+<!-- Музыкальный плейлист -->
+<audio id="bg-music" preload="auto"></audio>
+<button id="play-btn" class="blinking-button">!!!!НАЖАТЬ!!!!</button>
+
+<!-- Эффект салюта -->
+<canvas id="explosion-canvas"></canvas>
 </body>
 </html>
