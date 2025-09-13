@@ -3,7 +3,7 @@ const playlist = [
     "./music/1.mp3",
     "./music/2.mp3",
     "./music/3.mp3",
-    "./music/4.mp3",
+    "./music/4.m4a",
     "./music/5.mp3"
 ];
 let currentTrack = 0;
@@ -23,7 +23,7 @@ function printLibrary(library, tableBody) {
     library.forEach((book, index) => {
         const row = document.createElement("tr");
 
-        row.innerHTML = `
+        row.innerHTML = `        
           <td>${index + 1}</td>
           <td>${book.isbn}</td>
           <td>${book.title}</td>
