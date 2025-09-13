@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
             form.reset();
 
             // 🎆 Приглушаем музыку перед запуском салюта
-            music.volume = 0.1;
+            music.volume = 0.01;
 
             // Запускаем салют и звук
             launchFirework();
